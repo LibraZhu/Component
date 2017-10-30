@@ -1,1 +1,1 @@
-include ':app', ':superrecyclerview', ':loadingdialog'
+include ':app', ':superrecyclerview', ':indicator', ':zxing', ':base_kotlin'
