@@ -12,6 +12,8 @@ public class ExpandItem {
     private Object child;
     private boolean expanded;
     private boolean isParent;
+    private boolean isFirstChild = false;
+    private boolean isLastChild = false ;
 
     private List<ExpandItem> mWrappedChildList;
 
@@ -64,11 +66,24 @@ public class ExpandItem {
         for (Object child : parent.getChildList()) {
             childItemList.add(new ExpandItem(parent, child));
         }
+        if(!childItemList.isEmpty()) {
+            childItemList.get(0).isFirstChild = true;
+            childItemList.get(childItemList.size() - 1).isLastChild = true;
+        }
+
 
         return childItemList;
     }
 
     public List<ExpandItem> getWrappedChildList() {
         return mWrappedChildList;
+    }
+
+    public boolean isFirstChild() {
+        return isFirstChild;
+    }
+
+    public boolean isLastChild() {
+        return isLastChild;
     }
 }

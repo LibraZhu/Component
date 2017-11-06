@@ -39,7 +39,10 @@ publish {
   userOrg = 'librazhu' //bintray.com用户名
   groupId = 'com.libra' //jcenter上的路径
   artifactId = 'superrecyclerview' //项目名称
-  publishVersion = '1.0.0' //版本号
+  publishVersion = '1.0.1' //版本号
+  bintrayUser = 'LibraZhu'
+  bintrayKey = '4d89b94f6db5ce4c0215826a2dbb764e61ab2225'
+  dryRun = 'false'
 }
 
-//./gradlew clean build bintrayUpload -PbintrayUser=LibraZhu -PbintrayKey=4d89b94f6db5ce4c0215826a2dbb764e61ab2225 -PdryRun=false
+// ./gradlew clean build bintrayUpload -PbintrayUser=LibraZhu -PbintrayKey=4d89b94f6db5ce4c0215826a2dbb764e61ab2225 -PdryRun=false
