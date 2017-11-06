@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.novoda.bintray-release'
-
+apply plugin: 'com.novoda.bintray-release'
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.novoda:bintray-release:0.7.0'
+  }
+}
 android {
   compileSdkVersion 26
   buildToolsVersion "26.0.2"
@@ -28,11 +35,11 @@ dependencies {
   compile 'com.android.support:recyclerview-v7:26.1.0'
 }
 
-//publish {
-//  userOrg = 'librazhu' //bintray.com用户名
-//  groupId = 'com.libra' //jcenter上的路径
-//  artifactId = 'superrecyclerview' //项目名称
-//  publishVersion = '1.0.0' //版本号
-//}
+publish {
+  userOrg = 'librazhu' //bintray.com用户名
+  groupId = 'com.libra' //jcenter上的路径
+  artifactId = 'superrecyclerview' //项目名称
+  publishVersion = '1.0.0' //版本号
+}
 
 //./gradlew clean build bintrayUpload -PbintrayUser=LibraZhu -PbintrayKey=4d89b94f6db5ce4c0215826a2dbb764e61ab2225 -PdryRun=false

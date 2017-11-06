@@ -48,11 +48,11 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
      * 初始化toolbar
      */
     open fun initToolBar() {
-        toolbar = findViewById(R.id.titlebar) as Toolbar
+        toolbar = findViewById(R.id.titlebar)
         if (toolbar != null) {
             this.setSupportActionBar(toolbar)
             toolbar!!.setNavigationOnClickListener({ onBackPressed() })
-            toolbarTitle = toolbar!!.findViewById(R.id.titleName) as TextView
+            toolbarTitle = toolbar!!.findViewById(R.id.titleName)
             if (toolbarTitle != null) {
                 supportActionBar?.setDisplayShowTitleEnabled(false)
             }

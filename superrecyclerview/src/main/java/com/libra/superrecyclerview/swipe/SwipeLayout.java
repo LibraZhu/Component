@@ -32,6 +32,7 @@ public class SwipeLayout extends FrameLayout {
     private int mDragDistance = 0;
     private DragEdge mDragEdge;
     private ShowMode mShowMode;
+    private boolean leftRight;
 
     private float mHorizontalSwipeOffset;
     private float mVerticalSwipeOffset;
@@ -75,6 +76,9 @@ public class SwipeLayout extends FrameLayout {
         a.recycle();
     }
 
+    public void setLeftRight(boolean leftRight) {
+        this.leftRight = leftRight;
+    }
 
     public interface SwipeListener {
         void onStartOpen(SwipeLayout layout);
@@ -711,7 +715,7 @@ public class SwipeLayout extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if (ev.getX() == downX) {
+                if (ev.getX() == downX) {//是否是点击事件，如果是点击事件，则处理他的子视图的点击事件
                     if (status == Status.Close) {
                         mTouchConsumedByChild =
                                 childNeedHandleTouchEvent(getSurfaceView(), ev) != null;
@@ -843,6 +847,13 @@ public class SwipeLayout extends FrameLayout {
         float angle = Math.abs(distanceY / distanceX);
         angle = (float) Math.toDegrees(Math.atan(angle));
 
+        if (leftRight && status == Status.Close) {
+            if (event.getX() > downX) {
+                mDragEdge = DragEdge.Left;
+            } else {
+                mDragEdge = DragEdge.Right;
+            }
+        }
         boolean doNothing = false;
         if (mDragEdge == DragEdge.Right) {
             boolean suitable = (status == Status.Open && distanceX > 0) || (status == Status.Close
@@ -1076,6 +1087,15 @@ public class SwipeLayout extends FrameLayout {
     }
 
     public ViewGroup getBottomView() {
+        if (leftRight) {
+            if (mDragEdge == DragEdge.Left) {
+                ((ViewGroup) getChildAt(0)).getChildAt(0).setVisibility(VISIBLE);
+                ((ViewGroup) getChildAt(0)).getChildAt(1).setVisibility(GONE);
+            } else {
+                ((ViewGroup) getChildAt(0)).getChildAt(0).setVisibility(GONE);
+                ((ViewGroup) getChildAt(0)).getChildAt(1).setVisibility(VISIBLE);
+            }
+        }
         return (ViewGroup) getChildAt(0);
     }
 
@@ -1316,7 +1336,7 @@ public class SwipeLayout extends FrameLayout {
             if (mDragEdge == DragEdge.Left) {
                 bl = surfaceArea.left - mDragDistance;
             } else if (mDragEdge == DragEdge.Right) {
-                bl = surfaceArea.right;
+                bl = surfaceArea.right- dp2px(mHorizontalSwipeOffset);
             } else if (mDragEdge == DragEdge.Top) {
                 bt = surfaceArea.top - mDragDistance;
             } else {
