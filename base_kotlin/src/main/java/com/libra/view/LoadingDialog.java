@@ -1,5 +1,6 @@
 package com.libra.view;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.libra.base.R;
+import com.libra.R;
 
 /**
  * Created by libra on 2017/6/17.
@@ -31,6 +32,7 @@ public class LoadingDialog extends ProgressDialog {
     private int w, h;
     private TimeOutListener listener;
     private String message;
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
 
         public void handleMessage(android.os.Message msg) {

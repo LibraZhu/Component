@@ -6,8 +6,21 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarSize">@dimen/titlebarHeight</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="ToolbarPopStyle" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="ToolbarTextStyle">
+        <item name="android:textSize">@dimen/titleTextSize</item>
+        <item name="android:textColor">@color/titleTextColor</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="CommonDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">

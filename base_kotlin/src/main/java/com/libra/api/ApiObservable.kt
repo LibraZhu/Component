@@ -4,6 +4,7 @@ import android.util.Log
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import java.lang.IllegalArgumentException
 
 /**
  * Created by libra on 2017/8/1.

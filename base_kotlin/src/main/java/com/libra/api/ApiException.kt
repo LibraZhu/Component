@@ -1,6 +1,7 @@
 package com.libra.api
 
 import retrofit2.HttpException
+import java.lang.Exception
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -10,18 +11,18 @@ import java.net.UnknownHostException
  */
 
 class ApiException : Exception {
-    var code: String = ""
+    var code: Int = 0
 
     private constructor(throwable: Throwable) : super(throwable) {}
 
-    private constructor(code: String, message: String?) : super(message ?: "") {
+    private constructor(code: Int, message: String?) : super(message ?: "") {
         this.code = code
     }
 
     companion object {
         private val serialVersionUID = -5967830393343122572L
 
-        fun error(code: String): ApiException {
+        fun error(code: Int): ApiException {
             val errorMessage: String
             if (ERROR_HTTP_CONNECT_TIMEOUT == code) {
                 errorMessage = "Connect Timeout"
@@ -35,7 +36,7 @@ class ApiException : Exception {
             return ApiException(code, errorMessage)
         }
 
-        fun error(code: String, message: String?): ApiException {
+        fun error(code: Int, message: String?): ApiException {
             return ApiException(code, message)
         }
 
@@ -50,8 +51,8 @@ class ApiException : Exception {
             return ApiException(throwable)
         }
 
-        val ERROR_HTTP_CONNECT = "105"
-        val ERROR_HTTP_CONNECT_TIMEOUT = "106"
-        val ERROR_HTTP_HOST_UNKNOWN = "107"
+        val ERROR_HTTP_CONNECT = 100
+        val ERROR_HTTP_CONNECT_TIMEOUT = 101
+        val ERROR_HTTP_HOST_UNKNOWN = 102
     }
 }

@@ -1,11 +1,13 @@
 package com.libra.base
 
+import android.app.ProgressDialog
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.TextView
+import com.libra.R
 import com.libra.api.ApiObservable
 import com.libra.view.LoadingDialog
 
@@ -13,8 +15,8 @@ import com.libra.view.LoadingDialog
  * Created by libra on 2017/7/28.
  */
 abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
-
-    protected var progressDialog: LoadingDialog? = null
+    protected val TAG: String = "ID3_UI"
+    protected var progressDialog: ProgressDialog? = null
     protected var binding: B? = null
     protected var toolbar: Toolbar? = null
     protected var toolbarTitle: TextView? = null
@@ -60,7 +62,7 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
         }
     }
 
-    protected fun showBackButton(visible: Boolean) {
+    fun showBackButton(visible: Boolean) {
         supportActionBar?.setDisplayShowHomeEnabled(visible)
         supportActionBar?.setDisplayHomeAsUpEnabled(visible)
     }
@@ -90,17 +92,29 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
 
     fun showLoadingDialog(message: String, cancelable: Boolean) {
         if (progressDialog == null) {
-            progressDialog = LoadingDialog(this)
+            progressDialog = ProgressDialog.show(this, "", message)
             progressDialog?.setCanceledOnTouchOutside(false)
             progressDialog?.setCancelable(cancelable)
+        } else {
+            when (progressDialog?.isShowing) {
+                true -> progressDialog?.dismiss()
+            }
+            progressDialog?.setMessage(message)
+            progressDialog?.show()
         }
-        when (progressDialog?.isShowing) {
-            true -> progressDialog?.dismiss()
-        }
-        progressDialog?.setMessage(message)
-        progressDialog?.show()
     }
 
+
+    fun showLoadingDialog(timeOut: Int) {
+        if (null == progressDialog) {
+            progressDialog = LoadingDialog(this, timeOut)
+            progressDialog?.setCanceledOnTouchOutside(false)
+        }
+
+        progressDialog?.setTitle("")
+        if (!progressDialog?.isShowing()!!) progressDialog?.show() //        timeout
+
+    }
 
     fun closeLoadingDialog() {
         if (isFinishing) {
@@ -126,4 +140,5 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
         }
         super.onDestroy()
     }
+
 }

@@ -1,4 +1,4 @@
-package com.dooya.id3.module.base
+package com.libra.base
 
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.libra.api.ApiObservable
-import com.libra.base.BaseBindingActivity
 
 /**
  * Created by libra on 2017/8/11.
@@ -56,6 +55,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
 
     }
 
+    abstract fun updateView()
     fun showLoadingDialog() {
         showLoadingDialog("")
     }
@@ -85,8 +85,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
         return observable
     }
 
-    override fun onDestroyView() {
-        //取消接口订阅，防止内存泄露
+    override fun onDestroyView() { //取消接口订阅，防止内存泄露
         for (observable in observalbelList) {
             observable.dispose()
         }

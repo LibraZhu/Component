@@ -4,7 +4,7 @@
     <color name="colorAccent">@color/blue</color>
     <color name="colorLoading">#88ffffff</color>
 
-    <color name="titleTextColor">#282828</color>
+    <color name="titleTextColor">@color/white</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="blue">#4DA0FE</color>

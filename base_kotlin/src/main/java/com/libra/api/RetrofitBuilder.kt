@@ -55,9 +55,13 @@ object RetrofitBuilder {
                         if (contentType != null) {
                             charset = contentType.charset(Charset.forName("UTF-8"))
                         }
-                        if (isPlaintext(buffer)) {
-                            requestStartMessage += "\n--> request:" + buffer.readString(charset!!)
-                        } //Logger.d(URLDecoder.decode(requestStartMessage, "UTF-8"));
+                        if (contentType != null && contentType.toString().contains(
+                                "multipart/form-data")) {
+                        } else {
+                            if (isPlaintext(buffer)) {
+                                requestStartMessage += "\n--> request:" + buffer.readString(charset)
+                            }
+                        }
                     }
                     val response: Response
                     try {
