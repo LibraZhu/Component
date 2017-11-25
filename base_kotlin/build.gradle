@@ -48,37 +48,37 @@ dependencies {
   compile 'com.orhanobut:logger:2.1.1'
 }
 
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.15"
-    classpath 'com.novoda:bintray-release:0.7.0'
-  }
-}
-apply plugin: 'org.jetbrains.dokka-android'
-apply plugin: 'com.novoda.bintray-release'
-dokka {
-  outputFormat = 'html'
-  outputDirectory = "$buildDir/javadoc"
-}
-task sourcesJar(type: Jar) {
-  classifier = 'sources'
-  from android.sourceSets.main.java.srcDirs
-}
-
-task javadoc(type: Javadoc, dependsOn: dokka) {
-
-}
-
-
-publish {
-  userOrg = 'librazhu' //bintray.com用户名
-  groupId = 'com.libra' //jcenter上的路径
-  artifactId = 'lib-kotlin' //项目名称
-  publishVersion = '1.0.0' //版本号
-  bintrayUser = 'LibraZhu'
-  bintrayKey = '4d89b94f6db5ce4c0215826a2dbb764e61ab2225'
-  dryRun = 'false'
-}
+//buildscript {
+//  repositories {
+//    jcenter()
+//  }
+//  dependencies {
+//    classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.15"
+//    classpath 'com.novoda:bintray-release:0.7.0'
+//  }
+//}
+//apply plugin: 'org.jetbrains.dokka-android'
+//apply plugin: 'com.novoda.bintray-release'
+//dokka {
+//  outputFormat = 'html'
+//  outputDirectory = "$buildDir/javadoc"
+//}
+//task sourcesJar(type: Jar) {
+//  classifier = 'sources'
+//  from android.sourceSets.main.java.srcDirs
+//}
+//
+//task javadoc(type: Javadoc, dependsOn: dokka) {
+//
+//}
+//
+//
+//publish {
+//  userOrg = 'librazhu' //bintray.com用户名
+//  groupId = 'com.libra' //jcenter上的路径
+//  artifactId = 'lib-kotlin' //项目名称
+//  publishVersion = '1.0.0' //版本号
+//  bintrayUser = 'LibraZhu'
+//  bintrayKey = '4d89b94f6db5ce4c0215826a2dbb764e61ab2225'
+//  dryRun = 'false'
+//}
