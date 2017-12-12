@@ -17,6 +17,8 @@ public abstract class ExpandAdapter<VH extends RecyclerView.ViewHolder>
     public static final int TYPE_CHILD = 1;
     private List<ExpandItem> mList;
     private List<Object> mGroupList;
+    private boolean isCanExpand = true;
+    private boolean firstAllExpand = false;
 
     public ExpandAdapter() {
         mList = new ArrayList<>();
@@ -41,7 +43,7 @@ public abstract class ExpandAdapter<VH extends RecyclerView.ViewHolder>
     protected abstract void onBindParentViewHolder(VH holder, Object object, boolean isExpaned,
             int position, int size);
 
-    public abstract void onBindChildViewHolder(VH holder, ExpandItem item);
+    public abstract void onBindChildViewHolder(VH holder, ExpandItem item, int position);
 
     @Override
     public void onBindViewHolder(VH holder, final int position) {
@@ -54,16 +56,18 @@ public abstract class ExpandAdapter<VH extends RecyclerView.ViewHolder>
         if (expandItem.isParent()) {
             onBindParentViewHolder(holder, expandItem.getParent().getParent(),
                                    expandItem.isExpanded(), position, size);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (wrappedChildList != null && wrappedChildList.size() > 0) {
-                        updateExpanded(expandItem, position);
+            if (isCanExpand) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (wrappedChildList != null && wrappedChildList.size() > 0) {
+                            updateExpanded(expandItem, position);
+                        }
                     }
-                }
-            });
+                });
+            }
         } else {
-            onBindChildViewHolder(holder, expandItem);
+            onBindChildViewHolder(holder, expandItem, position);
         }
     }
 
@@ -81,6 +85,10 @@ public abstract class ExpandAdapter<VH extends RecyclerView.ViewHolder>
     public int getItemViewType(int position) {
         final ExpandItem expandItem = mList.get(position);
         return expandItem.isParent() ? TYPE_PARENT : TYPE_CHILD;
+    }
+
+    public ExpandItem getItem(int position) {
+        return mList.get(position);
     }
 
     public void setList(List groupList, Map<Object, List> groupMap) {
@@ -105,6 +113,41 @@ public abstract class ExpandAdapter<VH extends RecyclerView.ViewHolder>
             }
         }
         notifyDataSetChanged();
+    }
+
+    public void setList(List groupList, Map<Object, List> groupMap, boolean expand) {
+        this.mList.clear();
+        mGroupList.clear();
+        if (groupList != null) {
+            mGroupList.addAll(groupList);
+            for (int i = 0; i < groupList.size(); i++) {
+                Object o = groupList.get(i);
+                List childList = groupMap.get(o);
+                Parent parent = new Parent(o, childList);
+                ExpandItem item = new ExpandItem(parent, null, true);
+                if (expand) {
+                    expandGroupIndex.add(i);
+                }
+                this.mList.add(item);
+
+                if (expandGroupIndex.contains(i)) {
+                    item.setExpanded(true);
+                    List<ExpandItem> wrappedChildList = item.getWrappedChildList();
+                    if (wrappedChildList != null && wrappedChildList.size() > 0) {
+                        mList.addAll(wrappedChildList);
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setCanExpand(boolean canExpand) {
+        isCanExpand = canExpand;
+    }
+
+    public void setFirstAllExpand(boolean firstAllExpand) {
+        this.firstAllExpand = firstAllExpand;
     }
 
     private void updateExpanded(ExpandItem item, int position) {
