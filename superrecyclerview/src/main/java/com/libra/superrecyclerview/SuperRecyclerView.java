@@ -39,6 +39,7 @@ public class SuperRecyclerView extends FrameLayout {
     protected int mPaddingRight;
     protected int mScrollbarStyle;
     protected int mEmptyId;
+    protected boolean emptyFlag = false;
     protected int mMoreProgressId;
 
     protected LAYOUT_MANAGER_TYPE layoutManagerType;
@@ -404,7 +405,13 @@ public class SuperRecyclerView extends FrameLayout {
      */
     public void showEmpty() {
         hideRecycler();
+        emptyFlag = true;
         mEmpty.setVisibility(View.VISIBLE);
+    }
+
+    public void hideEmpty() {
+        emptyFlag = false;
+        mEmpty.setVisibility(View.GONE);
     }
 
     /**
@@ -433,6 +440,9 @@ public class SuperRecyclerView extends FrameLayout {
             } else if (mEmptyId != 0) {
                 mEmpty.setVisibility(View.GONE);
             }
+        }
+        if (!emptyFlag) {
+            mEmpty.setVisibility(View.GONE);
         }
         mRecycler.setVisibility(View.VISIBLE);
     }
