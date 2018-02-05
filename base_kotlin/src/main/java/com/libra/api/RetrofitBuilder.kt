@@ -39,7 +39,7 @@ object RetrofitBuilder {
         val builder = OkHttpClient.Builder()
         builder.connectTimeout(timeout.toLong(), TimeUnit.SECONDS).readTimeout(timeout.toLong(),
                                                                                TimeUnit.SECONDS) //添加测试log
-        if (Utils.getBuildConfig()) {
+        if (Utils.isDebug()) {
             builder.addInterceptor(object : Interceptor {
                 @Throws(IOException::class) override fun intercept(
                         chain: Interceptor.Chain): Response {
