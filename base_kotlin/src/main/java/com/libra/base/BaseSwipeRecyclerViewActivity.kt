@@ -47,7 +47,7 @@ abstract class BaseSwipeRecyclerViewActivity<B : ViewDataBinding> : BaseBindingA
 
     open fun initSwipeAdapter(): SwipeAdapter {
         return object : SwipeAdapter() {
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SwipeViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
                 return object : SwipeViewHolder(DataBindingUtil.inflate(
                         LayoutInflater.from(this@BaseSwipeRecyclerViewActivity), getItemLayoutID(),
                         parent, false)) {

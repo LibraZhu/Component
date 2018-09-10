@@ -47,8 +47,7 @@ abstract class BaseRecyclerViewActivity<B : ViewDataBinding> : BaseBindingActivi
 
     open fun initBaseAdapter(): BaseAdapter {
         return object : BaseAdapter() {
-            override fun onCreateViewHolder(parent: ViewGroup?,
-                                            viewType: Int): BaseBindingViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder {
                 viewHolder = object : BaseBindingViewHolder(
                         DataBindingUtil.inflate(LayoutInflater.from(this@BaseRecyclerViewActivity),
                                                 getItemLayoutID(), parent, false)) {

@@ -16,14 +16,12 @@ import com.libra.superrecyclerview.WrapperAdapter
 abstract class BaseSwipeRecyclerViewFragment<B : ViewDataBinding> : BaseBindingFragment<B>() {
 
     private var baseAdapter: SwipeAdapter? = null
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, getLayoutID(), container, false)
         return binding!!.root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycleView()
     }
@@ -52,10 +50,10 @@ abstract class BaseSwipeRecyclerViewFragment<B : ViewDataBinding> : BaseBindingF
 
     open fun initSwipeAdapter(): SwipeAdapter {
         return object : SwipeAdapter() {
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SwipeViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SwipeViewHolder {
                 return object : SwipeViewHolder(
                         DataBindingUtil.inflate(LayoutInflater.from(context), getItemLayoutID(),
-                                                parent, false)) {
+                                parent, false)) {
                     override fun initXmlModel(any: Any?): BaseXmlModel {
                         return initItemXmlModel(any, getBinding())
                     }

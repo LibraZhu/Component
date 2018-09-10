@@ -22,10 +22,9 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
         initIntentData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), getLayoutID(), container,
-                                          false)
+                false)
         initXmlModel()
         initCustomView()
         return binding?.root

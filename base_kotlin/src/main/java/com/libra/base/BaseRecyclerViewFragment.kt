@@ -18,12 +18,7 @@ abstract class BaseRecyclerViewFragment<B : ViewDataBinding> : BaseBindingFragme
     private var baseAdapter: BaseAdapter? = null
     protected var viewHolder: BaseBindingViewHolder? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycleView()
     }
@@ -52,11 +47,10 @@ abstract class BaseRecyclerViewFragment<B : ViewDataBinding> : BaseBindingFragme
 
     open fun initBaseAdapter(): BaseAdapter {
         return object : BaseAdapter() {
-            override fun onCreateViewHolder(parent: ViewGroup?,
-                                            viewType: Int): BaseBindingViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder {
                 viewHolder = object : BaseBindingViewHolder(
                         DataBindingUtil.inflate(LayoutInflater.from(context), getItemLayoutID(),
-                                                parent, false)) {init {
+                                parent, false)) {init {
                     initViewHolderView(getBinding())
                 }
 
