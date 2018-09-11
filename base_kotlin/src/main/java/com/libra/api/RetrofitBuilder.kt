@@ -38,10 +38,11 @@ object RetrofitBuilder {
         }
         val builder = OkHttpClient.Builder()
         builder.connectTimeout(timeout.toLong(), TimeUnit.SECONDS).readTimeout(timeout.toLong(),
-                                                                               TimeUnit.SECONDS) //添加测试log
+                TimeUnit.SECONDS) //添加测试log
         if (Utils.isDebug()) {
             builder.addInterceptor(object : Interceptor {
-                @Throws(IOException::class) override fun intercept(
+                @Throws(IOException::class)
+                override fun intercept(
                         chain: Interceptor.Chain): Response {
                     val request = chain.request()
                     var requestStartMessage = "" + request.method() + ' ' + request.url()
@@ -56,10 +57,11 @@ object RetrofitBuilder {
                             charset = contentType.charset(Charset.forName("UTF-8"))
                         }
                         if (contentType != null && contentType.toString().contains(
-                                "multipart/form-data")) {
+                                        "multipart/form-data")) {
                         } else {
                             if (isPlaintext(buffer)) {
                                 requestStartMessage += "\n--> request:" + buffer.readString(charset)
+                                requestStartMessage = URLDecoder.decode(requestStartMessage, "UTF-8")
                             }
                         }
                     }
@@ -85,7 +87,13 @@ object RetrofitBuilder {
                         if (isPlaintext(buffer)) {
                             requestStartMessage += "\n--> response:" + buffer.clone().readString(
                                     charset!!)
-                            Logger.d(URLDecoder.decode(requestStartMessage, "UTF-8"))
+                            try {
+                                requestStartMessage = requestStartMessage.replace("%(?![0-9a-fA-F]{2})", "%25")
+                                requestStartMessage = requestStartMessage.replace("\\+", "%2B")
+                                Logger.d(URLDecoder.decode(requestStartMessage, "UTF-8"))
+                            } catch (e: Exception) {
+                                Logger.d(requestStartMessage)
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -105,7 +113,7 @@ object RetrofitBuilder {
                             }
                             val codePoint = prefix.readUtf8CodePoint()
                             if (Character.isISOControl(codePoint) && !Character.isWhitespace(
-                                    codePoint)) {
+                                            codePoint)) {
                                 return false
                             }
                         }
@@ -129,7 +137,7 @@ object RetrofitBuilder {
         }
         val builder = OkHttpClient.Builder()
         builder.connectTimeout(timeout.toLong(), TimeUnit.SECONDS).readTimeout(timeout.toLong(),
-                                                                               TimeUnit.SECONDS)
+                TimeUnit.SECONDS)
         sslSocketFactory(builder, context, resId)
         Logger.i("api url:" + url)
         return Retrofit.Builder().client(builder.build()).addConverterFactory(
@@ -141,7 +149,7 @@ object RetrofitBuilder {
         try {
             val x509TrustManager = getX509TrustManager(context, "BKS", resId)
             builder.sslSocketFactory(getSSLSocketFactory(arrayOf(x509TrustManager)),
-                                     x509TrustManager)
+                    x509TrustManager)
         } catch (e: CertificateException) {
             e.printStackTrace()
         } catch (e: KeyStoreException) {
@@ -159,9 +167,10 @@ object RetrofitBuilder {
 
     @Throws(CertificateException::class, KeyStoreException::class, IOException::class,
             NoSuchAlgorithmException::class,
-            KeyManagementException::class) private fun getX509TrustManager(context: Context,
-                                                                           keyStoreType: String?,
-                                                                           keystoreResId: Int): X509TrustManager {
+            KeyManagementException::class)
+    private fun getX509TrustManager(context: Context,
+                                    keyStoreType: String?,
+                                    keystoreResId: Int): X509TrustManager {
         var keyStoreType = keyStoreType
         val cf = CertificateFactory.getInstance("X.509")
         val caInput = context.resources.openRawResource(keystoreResId)
@@ -181,7 +190,8 @@ object RetrofitBuilder {
 
 
     @Throws(NoSuchAlgorithmException::class,
-            KeyManagementException::class) private fun getSSLSocketFactory(
+            KeyManagementException::class)
+    private fun getSSLSocketFactory(
             trustManagers: Array<TrustManager>): SSLSocketFactory {
         val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(null, trustManagers, null)
