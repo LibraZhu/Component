@@ -88,10 +88,9 @@ object RetrofitBuilder {
                             requestStartMessage += "\n--> response:" + buffer.clone().readString(
                                     charset!!)
                             try {
-                                requestStartMessage = requestStartMessage.replace("%(?![0-9a-fA-F]{2})", "%25")
-                                requestStartMessage = requestStartMessage.replace("\\+", "%2B")
                                 Logger.d(URLDecoder.decode(requestStartMessage, "UTF-8"))
                             } catch (e: Exception) {
+                                e.printStackTrace()
                                 Logger.d(requestStartMessage)
                             }
                         }
