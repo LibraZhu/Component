@@ -6,7 +6,7 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 group = 'com.github.LibraZhu'
-version = "1.0.0"
+version = library_version
 
 android {
     compileSdkVersion 28
