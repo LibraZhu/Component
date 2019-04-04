@@ -1,48 +1,34 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
-buildscript {
-  repositories {
+apply plugin: 'com.github.dcendents.android-maven'
+repositories {
+    google()
     jcenter()
-  }
-  dependencies {
-    classpath 'com.novoda:bintray-release:0.7.0'
-  }
+    maven { url "https://jitpack.io" }
 }
-android {
-  compileSdkVersion 27
-  buildToolsVersion "27.0.3"
+group = 'com.github.LibraZhu'
 
-  defaultConfig {
-    minSdkVersion 15
-    targetSdkVersion 26
-    versionCode 1
-    versionName "1.0"
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
     }
-  }
-  lintOptions {
-    abortOnError false
-    checkReleaseBuilds false
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
-  compile fileTree(include: ['*.jar'], dir: 'libs')
-  compile 'com.android.support:recyclerview-v7:27.1.1'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'com.android.support:recyclerview-v7:28.0.0'
 }
-
-publish {
-  userOrg = 'librazhu' //bintray.com用户名
-  groupId = 'com.libra' //jcenter上的路径
-  artifactId = 'superrecyclerview' //项目名称
-  publishVersion = '1.0.4' //版本号
-  bintrayUser = 'LibraZhu'
-  bintrayKey = '4d89b94f6db5ce4c0215826a2dbb764e61ab2225'
-  dryRun = 'false'
-}
-
-// ./gradlew clean build bintrayUpload -PbintrayUser=LibraZhu -PbintrayKey=4d89b94f6db5ce4c0215826a2dbb764e61ab2225 -PdryRun=false
