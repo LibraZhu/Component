@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.libra.api.ApiObservable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 /**
  * Created by libra on 2017/8/11.
@@ -15,7 +17,7 @@ import com.libra.api.ApiObservable
 abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
 
     protected var binding: B? = null
-    protected val observalbelList: ArrayList<ApiObservable<*>> = ArrayList()
+    protected val mCompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,19 +77,20 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
         }
     }
 
-    /**
-     * 添加接口调用,生命周期控制ApiObservable
-     */
-    fun <T> addObservable(observable: ApiObservable<T>): ApiObservable<T> {
-        observalbelList.add(observable)
-        observable.subscribe()
-        return observable
+
+    fun addDisposable(disposable: Disposable?) {
+        if (disposable != null) {
+            mCompositeDisposable.add(disposable)
+        }
     }
 
+    fun clearDisposable() {
+        mCompositeDisposable.dispose()
+    }
+
+
     override fun onDestroyView() { //取消接口订阅，防止内存泄露
-        for (observable in observalbelList) {
-            observable.dispose()
-        }
+       clearDisposable()
         super.onDestroyView()
     }
 }

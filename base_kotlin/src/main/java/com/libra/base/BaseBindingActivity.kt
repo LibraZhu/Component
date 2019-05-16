@@ -1,6 +1,8 @@
 package com.libra.base
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -8,19 +10,20 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import com.libra.R
-import com.libra.api.ApiObservable
-import com.libra.view.LoadingDialog
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+
 
 /**
  * Created by libra on 2017/7/28.
  */
 abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
     protected val TAG: String = "ID3_UI"
-    protected var progressDialog: ProgressDialog? = null
+    protected var progressDialog: AlertDialog? = null
     protected var binding: B? = null
     protected var toolbar: Toolbar? = null
     protected var toolbarTitle: TextView? = null
-    protected val observableList: ArrayList<ApiObservable<*>> = ArrayList()
+    protected val mCompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,16 +107,18 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
         }
     }
 
-
-    fun showLoadingDialog(timeOut: Int) {
-        if (null == progressDialog) {
-            progressDialog = LoadingDialog(this, timeOut)
-            progressDialog?.setCanceledOnTouchOutside(false)
+    fun <D : AlertDialog> showLoadingDialog(clazz: Class<D>) {
+        if (progressDialog == null) {
+            val c1 = clazz.getDeclaredConstructor(Context::class.java)
+            c1.isAccessible = true
+            progressDialog = c1.newInstance(this)
+            progressDialog?.show()
+        } else {
+            when (progressDialog?.isShowing) {
+                true -> progressDialog?.dismiss()
+            }
+            progressDialog?.show()
         }
-
-        progressDialog?.setTitle("")
-        if (!progressDialog?.isShowing()!!) progressDialog?.show() //        timeout
-
     }
 
     fun closeLoadingDialog() {
@@ -128,16 +133,18 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
     /**
      * 添加接口调用
      */
-    fun <T> addObservable(observable: ApiObservable<T>): ApiObservable<T> {
-        observableList.add(observable)
-        observable.subscribe()
-        return observable
+    fun addDisposable(disposable: Disposable?) {
+        if (disposable != null) {
+            mCompositeDisposable.add(disposable)
+        }
+    }
+
+    fun clearDisposable() {
+        mCompositeDisposable.dispose()
     }
 
     override fun onDestroy() { //取消接口订阅，防止内存泄露
-        for (observable in observableList) {
-            observable.dispose()
-        }
+        clearDisposable()
         super.onDestroy()
     }
 

@@ -1,5 +1,6 @@
 package com.libra.app
 
+import android.app.ProgressDialog
 import android.util.Log
 import com.libra.api.ApiException
 import com.libra.api.ApiObservable
@@ -34,7 +35,7 @@ class Main2Activity : BaseBindingActivity<ActivityMainmBinding>() {
             }
             val requestStartMessage = buffer.clone().readString(charset!!)
             if (!requestStartMessage.isNullOrEmpty() && requestStartMessage.contains(
-                    "iwillbeback")) {
+                            "iwillbeback")) {
                 throw ApiException.error(-1000)
             }
         }).error(Consumer { e ->
@@ -52,6 +53,7 @@ class Main2Activity : BaseBindingActivity<ActivityMainmBinding>() {
     override fun initToolBar() {
         super.initToolBar()
         showBackButton(false)
+        showLoadingDialog(ProgressDialog::class.java)
     }
 
     override fun initCustomView() {

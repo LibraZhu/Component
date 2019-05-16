@@ -46,6 +46,7 @@ object RetrofitBuilder {
                         chain: Interceptor.Chain): Response {
                     val request = chain.request()
                     var requestStartMessage = "" + request.method() + ' ' + request.url()
+                    requestStartMessage += "\n--> header:" + request.headers().toString()
                     val requestBody = request.body()
                     val hasRequestBody = requestBody != null
                     if (hasRequestBody) {

@@ -31,31 +31,4 @@ object Utils {
 
         return false
     }
-
-    fun switch() {
-        val api = Retrofit.Builder().client(OkHttpClient.Builder().build()).addCallAdapterFactory(
-                RxJava2CallAdapterFactory.create()).baseUrl("https://github.com").build().create(
-                ApiService::class.java)
-        ApiObservable<ResponseBody>().observable(api.readme()).success(Consumer { responseBody ->
-            val source = responseBody.source()
-            source.request(Long.MAX_VALUE) // Buffer the entire body.
-            val buffer = source.buffer()
-
-            var charset: Charset? = Charset.forName("UTF-8")
-            val contentType = responseBody.contentType()
-            if (contentType != null) {
-                charset = contentType.charset(Charset.forName("UTF-8"))
-            }
-            val requestStartMessage = buffer.clone().readString(charset)
-            if (!requestStartMessage.isNullOrEmpty() && requestStartMessage.contains(
-                    "iwillbeback")) {
-                throw ApiException.error(-1000)
-            }
-        }).error(Consumer { e ->
-            if (e.code == -1000) {
-                throw ApiException.error(-1000)
-            }
-            e.printStackTrace()
-        }).subscribe()
-    }
 }
