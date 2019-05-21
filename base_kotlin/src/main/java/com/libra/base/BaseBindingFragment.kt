@@ -1,5 +1,6 @@
 package com.libra.base
 
+import android.app.AlertDialog
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -7,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.libra.api.ApiObservable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -69,6 +69,14 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
         }
     }
 
+    fun <D : AlertDialog> showLoadingDialog(clazz: Class<D>) {
+        if (isAdded && activity != null) {
+            if (activity is BaseBindingActivity<*>) {
+                (activity as BaseBindingActivity<*>).showLoadingDialog(clazz)
+            }
+        }
+    }
+
     fun closeLoadingDialog() {
         if (isAdded && activity != null) {
             if (activity is BaseBindingActivity<*>) {
@@ -90,7 +98,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
 
 
     override fun onDestroyView() { //取消接口订阅，防止内存泄露
-       clearDisposable()
+        clearDisposable()
         super.onDestroyView()
     }
 }
