@@ -16,12 +16,12 @@ abstract class BaseBindingViewHolder(
      *
      * @param obj obj
      */
-    open fun bindViewHolder(obj: Any?) {
-        binding.setVariable(BR.xmlmodel, initXmlModel(obj))
+    open fun bindViewHolder(obj: Any?, position: Int) {
+        binding.setVariable(BR.xmlmodel, initXmlModel(obj,position))
         binding.executePendingBindings()
     }
 
     open fun getBinding(): ViewDataBinding = binding
 
-    abstract fun initXmlModel(any: Any?): BaseXmlModel
+    abstract fun initXmlModel(any: Any?, position: Int): BaseXmlModel
 }

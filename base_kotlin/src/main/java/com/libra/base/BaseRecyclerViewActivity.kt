@@ -46,23 +46,7 @@ abstract class BaseRecyclerViewActivity<B : ViewDataBinding> : BaseBindingActivi
 
 
     open fun initBaseAdapter(): BaseAdapter {
-        return object : BaseAdapter() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder {
-                viewHolder = object : BaseBindingViewHolder(
-                        DataBindingUtil.inflate(LayoutInflater.from(this@BaseRecyclerViewActivity),
-                                                getItemLayoutID(), parent, false)) {
-                    init {
-                        initViewHolderView(getBinding())
-                    }
-
-                    override fun initXmlModel(any: Any?): BaseXmlModel {
-                        return initItemXmlModel(any, getBinding())
-                    }
-
-                }
-                return viewHolder!!
-            }
-        }
+        return Adapter(getItemLayoutID())
     }
 
     /**
@@ -143,7 +127,24 @@ abstract class BaseRecyclerViewActivity<B : ViewDataBinding> : BaseBindingActivi
 
     abstract fun getItemLayoutID(): Int
 
-    abstract fun initItemXmlModel(item: Any?, binding: ViewDataBinding): BaseXmlModel
+    abstract fun initItemXmlModel(item: Any?, binding: ViewDataBinding, position: Int): BaseXmlModel
 
     open fun initViewHolderView(binding: ViewDataBinding) {}
+
+    inner class Adapter(var layoutID: Int) : BaseAdapter() {
+        override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BaseBindingViewHolder {
+            return object : BaseBindingViewHolder(
+                    DataBindingUtil.inflate(LayoutInflater.from(this@BaseRecyclerViewActivity), layoutID, p0, false)
+            ) {
+                init {
+                    initViewHolderView(getBinding())
+                }
+
+                override fun initXmlModel(any: Any?, position: Int): BaseXmlModel {
+                    return initItemXmlModel(any, getBinding(), position)
+                }
+
+            }
+        }
+    }
 }
