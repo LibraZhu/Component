@@ -25,13 +25,13 @@ class ApiException : Exception {
         fun error(code: Int): ApiException {
             val errorMessage: String
             if (ERROR_HTTP_CONNECT_TIMEOUT == code) {
-                errorMessage = "Connect Timeout"
+                errorMessage = "连接超时，请检查网络"
             } else if (ERROR_HTTP_HOST_UNKNOWN == code) {
-                errorMessage = "Connect Host Unkown"
+                errorMessage = "连接失败，请检查网络"
             } else if (ERROR_HTTP_CONNECT == code) {
-                errorMessage = "Connect Error"
+                errorMessage = "连接错误，请检查网络"
             } else {
-                errorMessage = "UnKnown Exception"
+                errorMessage = "连接异常，请检查网络"
             }
             return ApiException(code, errorMessage)
         }

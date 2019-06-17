@@ -108,16 +108,20 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
     }
 
     fun <D : AlertDialog> showLoadingDialog(clazz: Class<D>) {
-        if (progressDialog == null) {
-            val c1 = clazz.getDeclaredConstructor(Context::class.java)
-            c1.isAccessible = true
-            progressDialog = c1.newInstance(this)
-            progressDialog?.show()
-        } else {
-            when (progressDialog?.isShowing) {
-                true -> progressDialog?.dismiss()
+        try {
+            if (progressDialog == null) {
+                val c1 = clazz.getDeclaredConstructor(Context::class.java)
+                c1.isAccessible = true
+                progressDialog = c1.newInstance(this)
+                progressDialog?.show()
+            } else {
+                when (progressDialog?.isShowing) {
+                    true -> progressDialog?.dismiss()
+                }
+                progressDialog?.show()
             }
-            progressDialog?.show()
+        } catch (e: Exception) {
+
         }
     }
 
