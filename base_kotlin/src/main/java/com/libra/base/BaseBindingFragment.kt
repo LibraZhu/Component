@@ -93,7 +93,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding> : Fragment() {
     }
 
     fun clearDisposable() {
-        mCompositeDisposable.dispose()
+        mCompositeDisposable.clear()
     }
 
 
