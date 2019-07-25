@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+
 import com.libra.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 import com.libra.superrecyclerview.util.FloatUtil;
 
@@ -50,6 +51,7 @@ public class SuperRecyclerView extends FrameLayout {
 
     protected OnMoreListener mOnMoreListener;
     protected boolean isLoadingMore;
+    protected boolean isLoadComplete;
     protected SwipeRefreshLayout mPtrLayout;
 
     protected int mSuperRecyclerViewMainLayout;
@@ -87,7 +89,7 @@ public class SuperRecyclerView extends FrameLayout {
         try {
             mSuperRecyclerViewMainLayout =
                     a.getResourceId(R.styleable.superrecyclerview_mainLayoutId,
-                                    R.layout.layout_progress_recyclerview);
+                            R.layout.layout_progress_recyclerview);
             mClipToPadding =
                     a.getBoolean(R.styleable.superrecyclerview_recyclerClipToPadding, false);
             mPadding = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPadding, -1.0f);
@@ -102,9 +104,9 @@ public class SuperRecyclerView extends FrameLayout {
             mScrollbarStyle = a.getInt(R.styleable.superrecyclerview_scrollbarStyle, -1);
             mEmptyId = a.getResourceId(R.styleable.superrecyclerview_layout_empty, 0);
             mMoreProgressId = a.getResourceId(R.styleable.superrecyclerview_layout_moreProgress,
-                                              R.layout.layout_more_progress);
+                    R.layout.layout_more_progress);
             mProgressId = a.getResourceId(R.styleable.superrecyclerview_layout_progress,
-                                          R.layout.layout_progress);
+                    R.layout.layout_progress);
         } finally {
             a.recycle();
         }
@@ -152,11 +154,16 @@ public class SuperRecyclerView extends FrameLayout {
         mRecycler.setClipToPadding(mClipToPadding);
         mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
 
+            /**
+             * 记录y轴滚动距离（>0代表向下滚动，<0代表向上滚动）
+             */
+            private int dy;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-                processOnMore();
+                // 记录y轴滚动距离（>0代表向下滚动）
+                this.dy = dy;
 
                 if (mExternalOnScrollListener != null) {
                     mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
@@ -169,6 +176,21 @@ public class SuperRecyclerView extends FrameLayout {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int lastVisibleItemPosition = getLastVisibleItemPosition(layoutManager);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                // 判断是否需要加载更多。1、可见性大于0。2、当前处于滚动停止状态。3、最后一个可见项大于或等于Item的总数（滚动到最底部）
+                if (dy > 0 && visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE &&
+                        (lastVisibleItemPosition >= totalItemCount - 1)) {
+                    if (!isLoadingMore && mOnMoreListener != null && !isLoadComplete) {
+                        isLoadingMore = true;
+                        mMoreProgress.setVisibility(View.VISIBLE);
+                        mOnMoreListener
+                                .onMoreAsked(mRecycler.getAdapter().getItemCount(), ITEM_LEFT_TO_LOAD_MORE,
+                                        lastVisibleItemPosition);
+                    }
+                }
                 if (mExternalOnScrollListener != null) {
                     mExternalOnScrollListener.onScrollStateChanged(recyclerView, newState);
                 }
@@ -187,26 +209,6 @@ public class SuperRecyclerView extends FrameLayout {
 
         if (mScrollbarStyle != -1) {
             mRecycler.setScrollBarStyle(mScrollbarStyle);
-        }
-    }
-
-    private void processOnMore() {
-        RecyclerView.LayoutManager layoutManager = mRecycler.getLayoutManager();
-        int lastVisibleItemPosition = getLastVisibleItemPosition(layoutManager);
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-
-        if (((totalItemCount - lastVisibleItemPosition) <= ITEM_LEFT_TO_LOAD_MORE
-                || (totalItemCount - lastVisibleItemPosition) == 0
-                && totalItemCount > visibleItemCount) && !isLoadingMore) {
-
-            isLoadingMore = true;
-            if (mOnMoreListener != null) {
-                mMoreProgress.setVisibility(View.VISIBLE);
-                mOnMoreListener
-                        .onMoreAsked(mRecycler.getAdapter().getItemCount(), ITEM_LEFT_TO_LOAD_MORE,
-                                     lastVisibleItemPosition);
-            }
         }
     }
 
@@ -262,17 +264,17 @@ public class SuperRecyclerView extends FrameLayout {
     }
 
     /**
-     * @param adapter The new adapter to set, or null to set no adapter
-     * @param compatibleWithPrevious Should be set to true if new adapter uses the same
-     * {@android.support.v7.widget.RecyclerView.ViewHolder}
-     * as previous one
+     * @param adapter                       The new adapter to set, or null to set no adapter
+     * @param compatibleWithPrevious        Should be set to true if new adapter uses the same
+     *                                      {@android.support.v7.widget.RecyclerView.ViewHolder}
+     *                                      as previous one
      * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing
-     * Views. If adapters
-     * have stable ids and/or you want to animate the disappearing views, you may
-     * prefer to set this to false
+     *                                      Views. If adapters
+     *                                      have stable ids and/or you want to animate the disappearing views, you may
+     *                                      prefer to set this to false
      */
     private void setAdapterInternal(RecyclerView.Adapter adapter, boolean compatibleWithPrevious,
-            boolean removeAndRecycleExistingViews) {
+                                    boolean removeAndRecycleExistingViews) {
         if (compatibleWithPrevious) {
             mRecycler.swapAdapter(adapter, removeAndRecycleExistingViews);
         } else {
@@ -359,11 +361,11 @@ public class SuperRecyclerView extends FrameLayout {
     }
 
     /**
-     * @param adapter The new adapter to , or null to set no adapter.
+     * @param adapter                       The new adapter to , or null to set no adapter.
      * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing
-     * Views. If adapters
-     * have stable ids and/or you want to animate the disappearing views, you may
-     * prefer to set this to false.
+     *                                      Views. If adapters
+     *                                      have stable ids and/or you want to animate the disappearing views, you may
+     *                                      prefer to set this to false.
      */
     public void swapAdapter(RecyclerView.Adapter adapter, boolean removeAndRecycleExistingViews) {
         setAdapterInternal(adapter, true, removeAndRecycleExistingViews);
@@ -373,22 +375,22 @@ public class SuperRecyclerView extends FrameLayout {
             final SwipeDismissRecyclerViewTouchListener.DismissCallbacks listener) {
         SwipeDismissRecyclerViewTouchListener touchListener =
                 new SwipeDismissRecyclerViewTouchListener(mRecycler,
-                                                          new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
-                                                              @Override
-                                                              public boolean canDismiss(
-                                                                      int position) {
-                                                                  return listener
-                                                                          .canDismiss(position);
-                                                              }
+                        new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(
+                                    int position) {
+                                return listener
+                                        .canDismiss(position);
+                            }
 
-                                                              @Override
-                                                              public void onDismiss(
-                                                                      RecyclerView recyclerView,
-                                                                      int[] reverseSortedPositions) {
-                                                                  listener.onDismiss(recyclerView,
-                                                                                     reverseSortedPositions);
-                                                              }
-                                                          });
+                            @Override
+                            public void onDismiss(
+                                    RecyclerView recyclerView,
+                                    int[] reverseSortedPositions) {
+                                listener.onDismiss(recyclerView,
+                                        reverseSortedPositions);
+                            }
+                        });
         mSwipeDismissScrollListener = touchListener.makeScrollListener();
         mRecycler.setOnTouchListener(touchListener);
     }
@@ -471,7 +473,7 @@ public class SuperRecyclerView extends FrameLayout {
      * Set the colors for the SwipeRefreshLayout states
      */
     public void setRefreshingColorResources(@ColorRes int colRes1, @ColorRes int colRes2,
-            @ColorRes int colRes3, @ColorRes int colRes4) {
+                                            @ColorRes int colRes3, @ColorRes int colRes4) {
         mPtrLayout.setColorSchemeResources(colRes1, colRes2, colRes3, colRes4);
     }
 
@@ -551,6 +553,10 @@ public class SuperRecyclerView extends FrameLayout {
      */
     public void setLoadingMore(boolean isLoadingMore) {
         this.isLoadingMore = isLoadingMore;
+    }
+
+    public void setLoadingComplete(boolean isLoadComplete) {
+        this.isLoadComplete = isLoadComplete;
     }
 
     /**

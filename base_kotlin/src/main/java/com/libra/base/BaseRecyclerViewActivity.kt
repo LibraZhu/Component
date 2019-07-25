@@ -39,7 +39,7 @@ abstract class BaseRecyclerViewActivity<B : ViewDataBinding> : BaseBindingActivi
         }
         if (isCanLoadMore()) {
             getRecyclerView().setOnMoreListener { overallItemsCount, itemsBeforeMore, maxLastVisiblePosition ->
-                onLoadMore(overallItemsCount, itemsBeforeMore, maxLastVisiblePosition)
+                onLoadMore()
             }
         }
     }
@@ -107,11 +107,8 @@ abstract class BaseRecyclerViewActivity<B : ViewDataBinding> : BaseBindingActivi
     /**
      * 下拉加载回调
      *
-     * @param overallItemsCount 当前列表数目
-     * @param itemsBeforeMore 加载前的item数目
-     * @param maxLastVisiblePositio 最后可见item位置
      */
-    open fun onLoadMore(overallItemsCount: Int, itemsBeforeMore: Int, maxLastVisiblePositio: Int) {
+    open fun onLoadMore() {
 
     }
 
