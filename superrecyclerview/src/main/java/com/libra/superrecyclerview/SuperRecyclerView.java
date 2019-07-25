@@ -177,9 +177,9 @@ public class SuperRecyclerView extends FrameLayout {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int lastVisibleItemPosition = getLastVisibleItemPosition(layoutManager);
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItemPosition = getLastVisibleItemPosition(layoutManager) - 1;
+                int visibleItemCount = layoutManager.getChildCount() - 2;
+                int totalItemCount = layoutManager.getItemCount() - 2;
                 // 判断是否需要加载更多。1、可见性大于0。2、当前处于滚动停止状态。3、最后一个可见项大于或等于Item的总数（滚动到最底部）
                 if (dy > 0 && visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE &&
                         (lastVisibleItemPosition >= totalItemCount - 1)) {
