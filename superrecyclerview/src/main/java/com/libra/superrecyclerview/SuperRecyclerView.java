@@ -26,7 +26,7 @@ public class SuperRecyclerView extends FrameLayout {
 
     protected RecyclerView mRecycler;
     protected ViewStub mProgress;
-    protected ViewStub mMoreProgress;
+    protected FrameLayout mMoreProgress;
     protected ViewStub mEmpty;
     protected View mProgressView;
     protected View mMoreProgressView;
@@ -125,9 +125,11 @@ public class SuperRecyclerView extends FrameLayout {
         mProgress.setLayoutResource(mProgressId);
         mProgressView = mProgress.inflate();
 
-        mMoreProgress = (ViewStub) v.findViewById(R.id.more_progress);
-        mMoreProgress.setLayoutResource(mMoreProgressId);
-        if (mMoreProgressId != 0) mMoreProgressView = mMoreProgress.inflate();
+        mMoreProgress = (FrameLayout) v.findViewById(R.id.more_progress);
+        if (mMoreProgressId != 0) {
+            mMoreProgressView = LayoutInflater.from(getContext()).inflate(mMoreProgressId, null, false);
+            mMoreProgress.addView(mMoreProgressView);
+        }
         mMoreProgress.setVisibility(View.GONE);
 
         mEmpty = (ViewStub) v.findViewById(R.id.empty);
@@ -185,6 +187,7 @@ public class SuperRecyclerView extends FrameLayout {
                         (lastVisibleItemPosition >= totalItemCount - 1)) {
                     if (!isLoadingMore && mOnMoreListener != null && !isLoadComplete) {
                         isLoadingMore = true;
+                        mRecycler.scrollToPosition(mRecycler.getAdapter().getItemCount() - 1);
                         mMoreProgress.setVisibility(View.VISIBLE);
                         mOnMoreListener
                                 .onMoreAsked(mRecycler.getAdapter().getItemCount(), ITEM_LEFT_TO_LOAD_MORE,

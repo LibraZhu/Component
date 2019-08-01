@@ -1,42 +1,44 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ViewStub
-        android:id="@+id/more_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:inflatedId="@id/more_progress"/>
-
-    <com.libra.superrecyclerview.RecycleRefreshLayout
-        android:id="@+id/ptr_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/more_progress">
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@android:id/list"
+        <com.libra.superrecyclerview.RecycleRefreshLayout
+            android:id="@+id/ptr_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"/>
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
 
-    </com.libra.superrecyclerview.RecycleRefreshLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+        </com.libra.superrecyclerview.RecycleRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/more_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <ViewStub
         android:id="@+id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ViewStub
         android:id="@android:id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>
