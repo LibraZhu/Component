@@ -14,6 +14,7 @@ class ApiObservable<T> {
     private val mTransformer = SchedulersCompat.ioTransformer<T>()
     private var onSuccess: Consumer<T>? = null
     private var onError: Consumer<ApiException>? = null
+    private var onStatusCodeError: Consumer<ApiException>? = null
 
     fun observable(observable: Flowable<T>): ApiObservable<T> {
         this.observable = observable
@@ -42,10 +43,12 @@ class ApiObservable<T> {
                 if (throwable is ApiException) {
                     onError!!.accept(
                             throwable)
+                    onStatusCodeError?.accept(throwable)
                 } else {
-                    onError!!.accept(
-                            ApiException.error(
-                                    throwable))
+                    val apiException =
+                            ApiException.error(throwable)
+                    onError!!.accept(apiException)
+                    onStatusCodeError?.accept(apiException)
                 }
             }
         })
@@ -70,6 +73,16 @@ class ApiObservable<T> {
      */
     fun error(onError: Consumer<ApiException>): ApiObservable<T> {
         this.onError = onError
+        return this
+    }
+
+    /**
+     * 处理statusCode
+     * @param onError 回调
+     * @return ApiObservable
+     */
+    fun statusCodeError(onError: Consumer<ApiException>): ApiObservable<T> {
+        this.onStatusCodeError = onStatusCodeError
         return this
     }
 }
