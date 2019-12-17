@@ -82,7 +82,7 @@ class ApiObservable<T> {
      * @return ApiObservable
      */
     fun statusCodeError(onError: Consumer<ApiException>): ApiObservable<T> {
-        this.onStatusCodeError = onStatusCodeError
+        this.onStatusCodeError = onError
         return this
     }
 }
