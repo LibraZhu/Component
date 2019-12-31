@@ -3,11 +3,14 @@ package com.libra.base
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.res.Resources
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.widget.TextView
 import com.libra.R
 import io.reactivex.disposables.CompositeDisposable
@@ -152,4 +155,48 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
         super.onDestroy()
     }
 
+    open fun isTextSizeAuto(): Boolean {
+        return resources.getBoolean(R.bool.isTextSizeAuto)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (isTextSizeAuto()) {
+            super.attachBaseContext(newBase)
+            return
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            try {
+                val res = newBase?.resources
+                val config = res?.configuration
+                config?.fontScale = 1.0f
+                val configurationContext =
+                        newBase?.createConfigurationContext(config)
+                super.attachBaseContext(configurationContext)
+            } catch (e: Exception) {
+            }
+        } else {
+            super.attachBaseContext(newBase)
+        }
+    }
+
+    override fun getResources(): Resources {
+        if (isTextSizeAuto()) {
+            return super.getResources()
+        }
+        var res = super.getResources()
+        if (res != null && res.configuration.fontScale != 1.0f) {
+            val newConfig = res.configuration
+            newConfig.fontScale = 1.0f
+            if (Build.VERSION.SDK_INT >= 17) {
+                Log.e("11111", "createConfigurationContext")
+                val configurationContext = createConfigurationContext(newConfig)
+                res = configurationContext.resources
+                res.displayMetrics.scaledDensity =
+                        res.displayMetrics.density.times(newConfig.fontScale)
+            } else {
+                res.updateConfiguration(newConfig, res.displayMetrics)
+            }
+        }
+        return res
+    }
 }
