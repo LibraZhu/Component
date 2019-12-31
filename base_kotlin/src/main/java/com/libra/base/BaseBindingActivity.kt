@@ -189,7 +189,6 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
             val newConfig = res.configuration
             newConfig.fontScale = 1.0f
             if (Build.VERSION.SDK_INT >= 17) {
-                Log.e("11111", "createConfigurationContext")
                 val configurationContext = createConfigurationContext(newConfig)
                 res = configurationContext.resources
                 res.displayMetrics.scaledDensity =
