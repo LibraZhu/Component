@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.widget.TextView
 import com.libra.R
 import io.reactivex.disposables.CompositeDisposable
@@ -156,7 +155,7 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
     }
 
     open fun isTextSizeAuto(): Boolean {
-        return resources.getBoolean(R.bool.isTextSizeAuto)
+        return false
     }
 
     override fun attachBaseContext(newBase: Context?) {
