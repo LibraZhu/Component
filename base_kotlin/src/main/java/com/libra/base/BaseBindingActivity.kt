@@ -168,7 +168,7 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
             try {
                 val res = newBase?.resources
                 val config = res?.configuration
-                config?.fontScale = 1.0f
+                config?.setToDefaults()
                 val configurationContext =
                         newBase?.createConfigurationContext(config)
                 super.attachBaseContext(configurationContext)
@@ -187,7 +187,7 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
         var res = super.getResources()
         if (res != null && res.configuration.fontScale != 1.0f) {
             val newConfig = res.configuration
-            newConfig.fontScale = 1.0f
+            newConfig.setToDefaults()
             if (Build.VERSION.SDK_INT >= 17) {
                 val configurationContext = createConfigurationContext(newConfig)
                 res = configurationContext.resources
