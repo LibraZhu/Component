@@ -173,6 +173,7 @@ abstract class BaseBindingActivity<B : ViewDataBinding> : AppCompatActivity() {
                         newBase?.createConfigurationContext(config)
                 super.attachBaseContext(configurationContext)
             } catch (e: Exception) {
+                super.attachBaseContext(newBase)
             }
         } else {
             super.attachBaseContext(newBase)
