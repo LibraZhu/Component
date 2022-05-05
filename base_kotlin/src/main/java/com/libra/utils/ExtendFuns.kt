@@ -7,8 +7,10 @@ import android.content.res.Configuration
 import android.support.v4.app.Fragment
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import com.libra.R
 import java.io.Serializable
@@ -57,10 +59,11 @@ fun View.showSoftkeyboard() {
 /* Context */
 fun Context.toast(message: String?, duration: Int = Toast.LENGTH_SHORT) {
     val toast = Toast.makeText(this, null, duration)
+    toast.view = LayoutInflater.from(this).inflate(R.layout.layout_toast, null)
     if (this.resources.getBoolean(R.bool.toastIsCenter)) {
         toast.setGravity(Gravity.CENTER, 0, 0)
     }
-    toast.setText(message)
+    toast.view?.findViewById<TextView>(android.R.id.message)?.text = message
     toast.show()
 }
 

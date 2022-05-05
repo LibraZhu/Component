@@ -10,4 +10,6 @@
     <color name="blue">#4DA0FE</color>
     <color name="gray">#CCCCCC</color>
     <color name="backgroundColor">#f5f5f5</color>
+
+    <color name="toastTextColor">#ffffff</color>
 </resources>
