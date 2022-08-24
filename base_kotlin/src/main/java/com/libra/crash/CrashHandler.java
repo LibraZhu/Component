@@ -406,7 +406,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
 
         private String getSpKEY() {
-            String spKey = "SP_CRASH_HANDLER_" + getCurProcessName(context);
+//            String spKey = "SP_CRASH_HANDLER_" + getCurProcessName(context);
+            String spKey = "SP_CRASH_HANDLER";
             Log.i(TAG, "CrashListener spKey:" + spKey);
             return spKey;
         }
@@ -427,18 +428,18 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
 
         //获取进程名
-        private String getCurProcessName(Context context) {
-            int pid = android.os.Process.myPid();
-            ActivityManager mActivityManager = (ActivityManager) context
-                    .getSystemService(Context.ACTIVITY_SERVICE);
-            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
-                    .getRunningAppProcesses()) {
-                if (appProcess.pid == pid) {
-
-                    return appProcess.processName;
-                }
-            }
-            return null;
-        }
+//        private String getCurProcessName(Context context) {
+//            int pid = android.os.Process.myPid();
+//            ActivityManager mActivityManager = (ActivityManager) context
+//                    .getSystemService(Context.ACTIVITY_SERVICE);
+//            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
+//                    .getRunningAppProcesses()) {
+//                if (appProcess.pid == pid) {
+//
+//                    return appProcess.processName;
+//                }
+//            }
+//            return null;
+//        }
     }
 }
